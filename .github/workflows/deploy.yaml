@@ -52,7 +52,11 @@ jobs:
         run: |-
           docker push $IMAGE_NAME:latest
 
+      - name: Set tag in environment
+        if: contains(github.ref, 'refs/tags/')
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
       - name: Push tagged image
-        if: contains(github.ref, 'refs/tags/v')
+        if: contains(github.ref, 'refs/tags/')
         run: |-
-          docker push $IMAGE_NAME:$GITHUB_TAG
+          docker push $IMAGE_NAME:$RELEASE_VERSION
